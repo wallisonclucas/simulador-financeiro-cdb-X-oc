@@ -9,8 +9,22 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.title("📊 Simulador Financeiro: Operação Compromissada vs CDB")
-st.markdown("Compare o rendimento líquido diário de ambos os ativos considerando IOF e IR regressivos.")
+# --- LOGO PERSONALIZADA NA BARRA LATERAL ---
+# Criando uma logo minimalista estilizada com CSS
+st.sidebar.markdown(
+    """
+    <div style="text-align: center; margin-bottom: 25px; padding: 15px; border-radius: 10px; background-color: #1f2937; border: 1px solid #374151;">
+        <span style="font-size: 20px; font-weight: 800; letter-spacing: 2.5px; color: #ffffff; text-transform: uppercase;">
+            Ester <span style="color: #a3e635;">Sousa</span>
+        </span>
+        <br>
+        <span style="font-size: 10px; font-weight: 400; letter-spacing: 3px; color: #9ca3af; text-transform: uppercase;">
+            Intelligence & Finance
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- BARRA LATERAL DE ENTRADAS ---
 st.sidebar.header("Configurações do Investimento")
@@ -44,7 +58,7 @@ selic_atual = st.sidebar.number_input(
     "Taxa Selic Atual (% a.a.)", 
     min_value=1.0, 
     max_value=30.0, 
-    value=14.75, 
+    value=14.10, # Atualizado para 14.10% conforme seu último teste de validação
     step=0.25
 )
 
@@ -57,15 +71,17 @@ cdi_diario = (1 + cdi_anual) ** (1/252) - 1
 st.sidebar.markdown("---")
 st.sidebar.write(f"**CDI Anual Considerado:** {cdi_anual*100:.2f}%")
 
+# --- TITULO PRINCIPAL ---
+st.title("📊 Simulador Financeiro: Operação Compromissada vs CDB")
+st.markdown("Compare o rendimento líquido diário de ambos os ativos considerando IOF e IR regressivos.")
+
 # --- TABELAS AUXILIARES (Tributação e Dias Úteis) ---
-# Mapeamento exato de Dias Corridos para Dias Úteis baseado no print do Excel
 dias_uteis_map = {
     1:1, 2:2, 3:3, 4:4, 5:5, 6:5, 7:5, 8:6, 9:7, 10:8,
     11:9, 12:10, 13:10, 14:10, 15:11, 16:12, 17:13, 18:14, 19:15, 20:15,
     21:15, 22:16, 23:17, 24:18, 25:19, 26:20, 27:20, 28:20, 29:21, 30:22
 }
 
-# Tabela regressiva de IOF para os 30 dias
 iof_map = {
     1: 0.96, 2: 0.93, 3: 0.90, 4: 0.86, 5: 0.83, 6: 0.80, 7: 0.76, 8: 0.73, 9: 0.70, 10: 0.66,
     11: 0.63, 12: 0.60, 13: 0.56, 14: 0.53, 15: 0.50, 16: 0.46, 17: 0.43, 18: 0.40, 19: 0.36, 20: 0.33,
@@ -94,7 +110,7 @@ for corr in range(1, 31):
     cdb_iof = cdb_bruto * iof_pct
     cdb_liquido = (cdb_bruto - cdb_iof) * (1 - ir_aliquota)
     
-    # 2. Compromissada (OC) Cálculo (Isenta de IOF no modelo)
+    # 2. Compromissada (OC) Cálculo (Isenta de IOF)
     oc_bruto = valor_investimento * ((1 + oc_diario_efetivo) ** uteis - 1)
     oc_liquido = oc_bruto * (1 - ir_aliquota)
     
@@ -136,14 +152,12 @@ df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].ma
 df_formatado["Performance (CDB Equiv. % CDI)"] = df_formatado["Performance (CDB Equiv. % CDI)"].map("{:,.2f}%".format)
 
 # Estilização Soft / Pastel para Tema Escuro
-# Usando cores menos saturadas para não cansar as vistas
 def destacar_beneficio_dark(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
-    # Verde pastel suave e Vermelho/Laranja pastel suave que funcionam muito bem no tema escuro
     if val_limpo >= 0:
-        color = "background-color: #1a3322; color: #a3e635;"  # Fundo verde escuro sutil com texto verde-limão claro
+        color = "background-color: #1a3322; color: #a3e635;"  # Fundo verde sutil com texto verde-limão claro
     else:
-        color = "background-color: #3b1e1e; color: #f87171;"  # Fundo vermelho escuro sutil com texto vermelho claro
+        color = "background-color: #3b1e1e; color: #f87171;"  # Fundo vermelho sutil com texto vermelho claro
     return color
 
 # Exibindo a tabela formatada no Streamlit
