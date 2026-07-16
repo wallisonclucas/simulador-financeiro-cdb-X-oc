@@ -102,8 +102,6 @@ for corr in range(1, 31):
     beneficio = oc_liquido - cdb_liquido
     
     # 4. Equivalência de CDB (% do CDI)
-    # Quanto de taxa de CDB bruto eu precisaria para ter o rendimento líquido da OC após IOF e IR?
-    # CDB_Liq_Alvo = OC_Liquido -> CDB_Bruto_Alvo = OC_Liquido / ((1 - IOF) * (1 - IR))
     fator_imposto = (1 - iof_pct) * (1 - ir_aliquota)
     
     if fator_imposto > 0:
@@ -112,7 +110,7 @@ for corr in range(1, 31):
         taxa_anual_necessaria = (1 + taxa_diaria_necessaria) ** 252 - 1
         equivalencia_cdb = (taxa_anual_necessaria / cdi_anual) * 100
     else:
-        equivalencia_cdb = np.nan # Evita divisão por zero no dia 1 se necessário
+        equivalencia_cdb = np.nan
         
     dados_simulacao.append({
         "Dias Corridos": corr,
@@ -137,15 +135,20 @@ df_formatado["Rentabilidade Líquida - OC"] = df_formatado["Rentabilidade Líqui
 df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].map("R$ {:,.2f}".format)
 df_formatado["Performance (CDB Equiv. % CDI)"] = df_formatado["Performance (CDB Equiv. % CDI)"].map("{:,.2f}%".format)
 
-# Estilização básica com gradiente de cor no benefício (Verde se positivo, Vermelho se negativo)
-def destacar_beneficio(val):
+# Estilização Soft / Pastel para Tema Escuro
+# Usando cores menos saturadas para não cansar as vistas
+def destacar_beneficio_dark(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
-    color = "#d4edda" if val_limpo >= 0 else "#f8d7da"
-    return f"background-color: {color}"
+    # Verde pastel suave e Vermelho/Laranja pastel suave que funcionam muito bem no tema escuro
+    if val_limpo >= 0:
+        color = "background-color: #1a3322; color: #a3e635;"  # Fundo verde escuro sutil com texto verde-limão claro
+    else:
+        color = "background-color: #3b1e1e; color: #f87171;"  # Fundo vermelho escuro sutil com texto vermelho claro
+    return color
 
 # Exibindo a tabela formatada no Streamlit
 st.dataframe(
-    df_formatado.style.map(destacar_beneficio, subset=["Benefício (OC - CDB)"]),
+    df_formatado.style.map(destacar_beneficio_dark, subset=["Benefício (OC - CDB)"]),
     height=1000,
     use_container_width=True
 )
