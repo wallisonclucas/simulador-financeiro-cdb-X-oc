@@ -52,19 +52,20 @@ st.markdown(
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.2) !important;
         }
 
-        /* Cards de Métricas Premium (HTML Customizado) */
+        /* Cards de Métricas Premium com Fundo Branco (Auto Contraste) */
         .premium-card {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid #334155;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
             border-radius: 16px;
             padding: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .premium-card:hover {
             transform: translateY(-2px);
-            border-color: #10b981;
+            border-color: #10b981 !important;
+            box-shadow: 0 12px 20px -3px rgba(16, 185, 129, 0.15);
         }
 
         .premium-label {
@@ -72,19 +73,19 @@ st.markdown(
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #94a3b8;
+            color: #64748b !important; /* Cinza escuro para leitura no fundo branco */
             margin-bottom: 8px;
         }
 
         .premium-value {
             font-size: 24px;
             font-weight: 800;
-            color: #ffffff;
+            color: #0f172a !important; /* Azul escuro/preto para leitura no fundo branco */
             font-family: 'JetBrains Mono', monospace;
         }
 
         .premium-highlight {
-            color: #10b981;
+            color: #059669 !important; /* Verde escuro de alta leitura */
         }
 
         /* Customização da Tabela de Dados */
@@ -175,7 +176,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium
+# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium (Fundo Branco)
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -205,7 +206,7 @@ with col3:
         f"""
         <div class="premium-card">
             <div class="premium-label">Taxa CDB Alvo</div>
-            <div class="premium-value" style="color: #60a5fa;">{taxa_cdb_pct:.1f}% <span style="font-size: 14px; color: #64748b;">CDI</span></div>
+            <div class="premium-value" style="color: #2563eb !important;">{taxa_cdb_pct:.1f}% <span style="font-size: 14px; color: #64748b;">CDI</span></div>
         </div>
         """,
         unsafe_allow_html=True
@@ -282,12 +283,11 @@ for corr in range(1, 31):
 
 df = pd.DataFrame(dados_simulacao)
 
-# --- GRÁFICO DE EVOLUÇÃO (PLOTLY PREMIUM - TOTALMENTE AJUSTADO) ---
+# --- GRÁFICO DE EVOLUÇÃO (PLOTLY PREMIUM) ---
 st.markdown("<p style='font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 5px;'>📈 Curva de Evolução Patrimonial Líquida</p>", unsafe_allow_html=True)
 
 fig = go.Figure()
 
-# Linha da Compromissada (OC) - Hovertext reposicionado fora do dicionário de marker
 fig.add_trace(go.Scatter(
     x=df["Dias Corridos"],
     y=df["Líquido OC"],
@@ -299,7 +299,6 @@ fig.add_trace(go.Scatter(
     hovertemplate="<b>Dia %{x}</b><br>Compromissada: %{hovertext}<extra></extra>"
 ))
 
-# Linha do CDB - Hovertext reposicionado fora do dicionário de marker
 fig.add_trace(go.Scatter(
     x=df["Dias Corridos"],
     y=df["Líquido CDB"],
@@ -311,7 +310,6 @@ fig.add_trace(go.Scatter(
     hovertemplate="<b>Dia %{x}</b><br>CDB Alvo: %{hovertext}<extra></extra>"
 ))
 
-# Estilização do Gráfico no tema escuro (Dark Tech)
 fig.update_layout(
     paper_bgcolor='#0b0f19',
     plot_bgcolor='#0f172a',
@@ -352,13 +350,15 @@ df_formatado["Líquido OC"] = df_formatado["Líquido OC"].map("R$ {:,.2f}".forma
 df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].map("R$ {:,.2f}".format)
 df_formatado["CDB Equiv. (% do CDI)"] = df_formatado["CDB Equiv. (% do CDI)"].map("{:,.2f}%".format)
 
-# Estilização das Células da Tabela
+# Estilização das Células da Tabela com FONTES ESCURAS de alta visibilidade
 def style_beneficio(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
     if val_limpo >= 0:
-        return "background-color: rgba(6, 78, 59, 0.45); color: #34d399; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
+        # Fundo verde claro pastel, fonte verde escuro (Negrito)
+        return "background-color: #d1fae5; color: #065f46; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
     else:
-        return "background-color: rgba(127, 29, 29, 0.45); color: #f87171; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
+        # Fundo vermelho claro pastel, fonte vermelha escura (Negrito)
+        return "background-color: #fee2e2; color: #991b1b; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
 
 # Renderização do Bloco de Tabela
 st.markdown("<p style='font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 15px;'>📊 Matriz de Evolução Diária</p>", unsafe_allow_html=True)
