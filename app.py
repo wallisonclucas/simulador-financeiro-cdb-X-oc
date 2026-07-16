@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 
 # Configuração da página do Streamlit (com ícone financeiro na aba do navegador)
 st.set_page_config(
-    page_title="Ester Sousa | Intelligence & Finance",
+    page_title="RENDA FIXA | Intelligence & Finance",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -101,7 +101,7 @@ st.sidebar.markdown(
     """
     <div style="text-align: center; margin-bottom: 30px; padding: 25px 15px; border-radius: 16px; background: linear-gradient(185deg, #1e293b 0%, #090d16 100%); border: 1px solid #334155; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);">
         <span style="font-size: 20px; font-weight: 900; letter-spacing: 4px; color: #ffffff; text-shadow: 0 0 12px rgba(16, 185, 129, 0.3);">
-            ESTER <span style="color: #10b981;">SOUSA</span>
+            RENDA <span style="color: #10b981;">FIXA</span>
         </span>
         <br>
         <span style="font-size: 9px; font-weight: 600; letter-spacing: 5px; color: #64748b; text-transform: uppercase; margin-top: 5px; display: inline-block;">
