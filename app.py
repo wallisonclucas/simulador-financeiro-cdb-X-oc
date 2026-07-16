@@ -4,21 +4,63 @@ import numpy as np
 
 # Configuração da página do Streamlit
 st.set_page_config(
-    page_title="Simulador: Compromissada vs CDB",
+    page_title="Wallison Lucas | Intelligence & Finance",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
+# --- CSS CUSTOMIZADO PARA DESIGN PREMIUM ---
+st.markdown(
+    """
+    <style>
+        /* Suavização de fontes globais e fundos */
+        html, body, [data-testid="stSidebar"] {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        /* Estilização dos blocos de métricas (Cards) */
+        div[data-testid="stMetricValue"] {
+            font-size: 24px !important;
+            font-weight: 700 !important;
+            color: #a3e635 !important;
+        }
+        
+        div[data-testid="stMetricLabel"] {
+            font-size: 12px !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af !important;
+        }
+        
+        div[data-testid="metric-container"] {
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* Deixar os inputs da barra lateral mais elegantes */
+        div[data-testid="stSidebar"] .stNumberInput input {
+            background-color: #111827 !important;
+            border: 1px solid #374151 !important;
+            color: #f3f4f6 !important;
+            border-radius: 8px !important;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # --- LOGO PERSONALIZADA NA BARRA LATERAL ---
-# Criando uma logo minimalista estilizada com CSS
 st.sidebar.markdown(
     """
-    <div style="text-align: center; margin-bottom: 25px; padding: 15px; border-radius: 10px; background-color: #1f2937; border: 1px solid #374151;">
-        <span style="font-size: 20px; font-weight: 800; letter-spacing: 2.5px; color: #ffffff; text-transform: uppercase;">
-            Ester <span style="color: #a3e635;">Sousa</span>
+    <div style="text-align: center; margin-bottom: 25px; padding: 20px 15px; border-radius: 12px; background-color: #1f2937; border: 1px solid #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+        <span style="font-size: 21px; font-weight: 800; letter-spacing: 3px; color: #ffffff; text-transform: uppercase;">
+            Wallison <span style="color: #a3e635;">Lucas</span>
         </span>
         <br>
-        <span style="font-size: 10px; font-weight: 400; letter-spacing: 3px; color: #9ca3af; text-transform: uppercase;">
+        <span style="font-size: 9px; font-weight: 500; letter-spacing: 4px; color: #9ca3af; text-transform: uppercase;">
             Intelligence & Finance
         </span>
     </div>
@@ -27,9 +69,8 @@ st.sidebar.markdown(
 )
 
 # --- BARRA LATERAL DE ENTRADAS ---
-st.sidebar.header("Configurações do Investimento")
+st.sidebar.markdown("### ⚙️ Parâmetros do Modelo")
 
-# Inputs principais
 valor_investimento = st.sidebar.number_input(
     "Valor do Investimento (R$)", 
     min_value=1000.0, 
@@ -58,22 +99,39 @@ selic_atual = st.sidebar.number_input(
     "Taxa Selic Atual (% a.a.)", 
     min_value=1.0, 
     max_value=30.0, 
-    value=14.10, # Atualizado para 14.10% conforme seu último teste de validação
+    value=14.10, 
     step=0.25
 )
 
-# Cálculo automático do CDI diário/anual
-# Regra fornecida: CDI = Selic - 0.1%
+# Cálculos do CDI
 cdi_anual = (selic_atual - 0.1) / 100
 cdi_diario = (1 + cdi_anual) ** (1/252) - 1
 
-# Exibição dos parâmetros calculados
-st.sidebar.markdown("---")
-st.sidebar.write(f"**CDI Anual Considerado:** {cdi_anual*100:.2f}%")
+# --- CONTEÚDO PRINCIPAL ---
 
-# --- TITULO PRINCIPAL ---
-st.title("📊 Simulador Financeiro: Operação Compromissada vs CDB")
-st.markdown("Compare o rendimento líquido diário de ambos os ativos considerando IOF e IR regressivos.")
+# Cabeçalho refinado
+st.markdown(
+    """
+    <div style="margin-bottom: 35px;">
+        <h1 style="font-weight: 800; font-size: 32px; margin-bottom: 5px;">📊 Simulador de Ativos de Curto Prazo</h1>
+        <p style="color: #9ca3af; font-size: 16px; margin-top: 0;">Análise comparativa de rentabilidade líquida diária: Compromissada vs. CDB Tradicional.</p>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Seção de Cards (Métricas Rápidas)
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    st.metric("Investimento Inicial", f"R$ {valor_investimento:,.2f}")
+with col2:
+    st.metric("Compromissada", f"{taxa_compromissada_pct:.1f}% do CDI")
+with col3:
+    st.metric("CDB Alvo", f"{taxa_cdb_pct:.1f}% do CDI")
+with col4:
+    st.metric("Taxa CDI Anual", f"{cdi_anual*100:.2f}% a.a.")
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 # --- TABELAS AUXILIARES (Tributação e Dias Úteis) ---
 dias_uteis_map = {
@@ -88,16 +146,13 @@ iof_map = {
     21: 0.30, 22: 0.26, 23: 0.23, 24: 0.20, 25: 0.16, 26: 0.13, 27: 0.10, 28: 0.06, 29: 0.03, 30: 0.00
 }
 
-ir_aliquota = 0.225 # 22.5% para prazos abaixo de 180 dias
+ir_aliquota = 0.225
 
-# --- PROCESSAMENTO DOS DADOS ---
+# --- PROCESSAMENTO ---
 dados_simulacao = []
-
-# Taxas efetivas dos ativos ao ano
 taxa_cdb_ano = cdi_anual * (taxa_cdb_pct / 100)
 taxa_oc_ano = cdi_anual * (taxa_compromissada_pct / 100)
 
-# Taxas efetivas diárias (252 d.u.)
 cdb_diario_efetivo = (1 + taxa_cdb_ano) ** (1/252) - 1
 oc_diario_efetivo = (1 + taxa_oc_ano) ** (1/252) - 1
 
@@ -105,19 +160,14 @@ for corr in range(1, 31):
     uteis = dias_uteis_map[corr]
     iof_pct = iof_map[corr]
     
-    # 1. CDB Cálculo
     cdb_bruto = valor_investimento * ((1 + cdb_diario_efetivo) ** uteis - 1)
     cdb_iof = cdb_bruto * iof_pct
     cdb_liquido = (cdb_bruto - cdb_iof) * (1 - ir_aliquota)
     
-    # 2. Compromissada (OC) Cálculo (Isenta de IOF)
     oc_bruto = valor_investimento * ((1 + oc_diario_efetivo) ** uteis - 1)
     oc_liquido = oc_bruto * (1 - ir_aliquota)
     
-    # 3. Benefício (Diferença)
     beneficio = oc_liquido - cdb_liquido
-    
-    # 4. Equivalência de CDB (% do CDI)
     fator_imposto = (1 - iof_pct) * (1 - ir_aliquota)
     
     if fator_imposto > 0:
@@ -131,40 +181,46 @@ for corr in range(1, 31):
     dados_simulacao.append({
         "Dias Corridos": corr,
         "Dias Úteis": uteis,
-        "IOF (%)": f"{iof_pct * 100:.0f}%",
-        "IR (%)": f"{ir_aliquota * 100:.1f}%",
-        "Rentabilidade Líquida - CDB": cdb_liquido,
-        "Rentabilidade Líquida - OC": oc_liquido,
+        "IOF": f"{iof_pct * 100:.0f}%",
+        "IR": f"{ir_aliquota * 100:.1f}%",
+        "Líquido CDB": cdb_liquido,
+        "Líquido OC": oc_liquido,
         "Benefício (OC - CDB)": beneficio,
-        "Performance (CDB Equiv. % CDI)": equivalencia_cdb
+        "CDB Equiv. (% do CDI)": equivalencia_cdb
     })
 
 df = pd.DataFrame(dados_simulacao)
 
-# --- APRESENTAÇÃO DOS RESULTADOS ---
-st.subheader("Tabela Comparativa de Rendimentos (Prazo de 1 a 30 dias)")
-
-# Formatação visual das colunas de dinheiro e porcentagem para exibição
+# --- CONFIGURAÇÃO VISUAL DA TABELA ---
 df_formatado = df.copy()
-df_formatado["Rentabilidade Líquida - CDB"] = df_formatado["Rentabilidade Líquida - CDB"].map("R$ {:,.2f}".format)
-df_formatado["Rentabilidade Líquida - OC"] = df_formatado["Rentabilidade Líquida - OC"].map("R$ {:,.2f}".format)
+df_formatado["Líquido CDB"] = df_formatado["Líquido CDB"].map("R$ {:,.2f}".format)
+df_formatado["Líquido OC"] = df_formatado["Líquido OC"].map("R$ {:,.2f}".format)
 df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].map("R$ {:,.2f}".format)
-df_formatado["Performance (CDB Equiv. % CDI)"] = df_formatado["Performance (CDB Equiv. % CDI)"].map("{:,.2f}%".format)
+df_formatado["CDB Equiv. (% do CDI)"] = df_formatado["CDB Equiv. (% do CDI)"].map("{:,.2f}%".format)
 
-# Estilização Soft / Pastel para Tema Escuro
-def destacar_beneficio_dark(val):
+# Estilização de Alto Padrão para a coluna de Benefício
+def style_beneficio(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
     if val_limpo >= 0:
-        color = "background-color: #1a3322; color: #a3e635;"  # Fundo verde sutil com texto verde-limão claro
+        return "background-color: #064e3b; color: #34d399; font-weight: bold; border-left: 4px solid #34d399;"
     else:
-        color = "background-color: #3b1e1e; color: #f87171;"  # Fundo vermelho sutil com texto vermelho claro
-    return color
+        return "background-color: #7f1d1d; color: #f87171; font-weight: bold; border-left: 4px solid #f87171;"
 
-# Exibindo a tabela formatada no Streamlit
+# Renderização
+st.markdown("### 📊 Tabela de Evolução Temporal")
 st.dataframe(
-    df_formatado.style.map(destacar_beneficio_dark, subset=["Benefício (OC - CDB)"]),
-    height=1000,
+    df_formatado.style.map(style_beneficio, subset=["Benefício (OC - CDB)"]),
+    height=800,
     use_container_width=True
 )
 
-st.info("💡 **Nota:** A coluna 'Benefício' destaca em verde quando a Compromissada rende mais que o CDB.")
+# Rodapé profissional
+st.markdown("---")
+st.markdown(
+    """
+    <div style="text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px;">
+        Desenvolvido por 💻 <strong>Wallison Lucas Intelligence & Finance</strong> | Todos os cálculos consideram d.u. base 252 e IOF/IR regressivos.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
