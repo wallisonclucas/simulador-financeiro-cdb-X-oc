@@ -4,7 +4,7 @@ import numpy as np
 
 # Configuração da página do Streamlit
 st.set_page_config(
-    page_title="Wallison Lucas | Intelligence & Finance",
+    page_title="Ester Sousa | Intelligence & Finance",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -57,7 +57,7 @@ st.sidebar.markdown(
     """
     <div style="text-align: center; margin-bottom: 25px; padding: 20px 15px; border-radius: 12px; background-color: #1f2937; border: 1px solid #374151; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
         <span style="font-size: 21px; font-weight: 800; letter-spacing: 3px; color: #ffffff; text-transform: uppercase;">
-            Wallison <span style="color: #a3e635;">Lucas</span>
+            ESTER <span style="color: #a3e635;">SOUSA</span>
         </span>
         <br>
         <span style="font-size: 9px; font-weight: 500; letter-spacing: 4px; color: #9ca3af; text-transform: uppercase;">
