@@ -52,20 +52,30 @@ st.markdown(
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.2) !important;
         }
 
-        /* Cards de Métricas Premium com Fundo Branco (Auto Contraste) */
+        /* Cards de Métricas Premium com Fundo Branco Texturizado e Bordas Ativas */
         .premium-card {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
+            background-color: #ffffff !important;
+            /* Textura moderna sutil de grade pontilhada */
+            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px) !important;
+            background-size: 12px 12px !important;
+            
+            border: 1px solid #cbd5e1 !important;
             border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            padding: 24px 20px;
+            text-align: center; /* Centraliza todo o texto do card */
+            
+            /* Sombra suave e elegante para efeito de profundidade */
+            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
         }
 
+        /* Efeito Hover moderno nos cards (Brilho ativo com borda de destaque) */
         .premium-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px);
             border-color: #10b981 !important;
-            box-shadow: 0 12px 20px -3px rgba(16, 185, 129, 0.15);
+            box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.15), 0 10px 10px -5px rgba(16, 185, 129, 0.1);
         }
 
         .premium-label {
@@ -73,19 +83,21 @@ st.markdown(
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #64748b !important; /* Cinza escuro para leitura no fundo branco */
-            margin-bottom: 8px;
+            color: #64748b !important; /* Cinza de boa legibilidade sobre fundo branco */
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         .premium-value {
             font-size: 24px;
             font-weight: 800;
-            color: #0f172a !important; /* Azul escuro/preto para leitura no fundo branco */
+            color: #0f172a !important; /* Azul escuro quase preto de altíssimo contraste */
             font-family: 'JetBrains Mono', monospace;
+            text-align: center;
         }
 
         .premium-highlight {
-            color: #059669 !important; /* Verde escuro de alta leitura */
+            color: #059669 !important; /* Verde focado na legibilidade */
         }
 
         /* Customização da Tabela de Dados */
@@ -176,7 +188,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium (Fundo Branco)
+# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium (Fundo Branco com Textura)
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -350,7 +362,7 @@ df_formatado["Líquido OC"] = df_formatado["Líquido OC"].map("R$ {:,.2f}".forma
 df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].map("R$ {:,.2f}".format)
 df_formatado["CDB Equiv. (% do CDI)"] = df_formatado["CDB Equiv. (% do CDI)"].map("{:,.2f}%".format)
 
-# Estilização das Células da Tabela com FONTES ESCURAS de alta visibilidade
+# Estilização das Células da Tabela com FONTES ESCURAS e alto contraste de leitura
 def style_beneficio(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
     if val_limpo >= 0:
