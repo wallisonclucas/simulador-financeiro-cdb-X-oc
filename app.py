@@ -1,10 +1,12 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 
-# Configuração da página do Streamlit
+# Configuração da página do Streamlit (com ícone financeiro na aba do navegador)
 st.set_page_config(
     page_title="Ester Sousa | Intelligence & Finance",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -13,7 +15,7 @@ st.set_page_config(
 st.markdown(
     """
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&family=JetBrains+Mono:wght=400;700&display=swap');
 
         /* Reset e Fontes */
         html, body, [data-testid="stSidebar"], .stApp {
@@ -94,7 +96,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# --- LOGO PERSONALIZADA GOWING NA BARRA LATERAL ---
+# --- LOGO PERSONALIZADA NA BARRA LATERAL ---
 st.sidebar.markdown(
     """
     <div style="text-align: center; margin-bottom: 30px; padding: 25px 15px; border-radius: 16px; background: linear-gradient(185deg, #1e293b 0%, #090d16 100%); border: 1px solid #334155; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);">
@@ -151,17 +153,21 @@ cdi_diario = (1 + cdi_anual) ** (1/252) - 1
 
 # --- CONTEÚDO PRINCIPAL ---
 
-# Header refinado com badge tecnológico
+# Header refinado com Badge tecnológico e Ícone de Alta Financeira SVG integrado ao título com brilho neon
 st.markdown(
     """
     <div style="margin-bottom: 35px; border-bottom: 1px solid #1e293b; padding-bottom: 20px;">
         <span style="background-color: rgba(16, 185, 129, 0.1); color: #10b981; font-size: 10px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid rgba(16, 185, 129, 0.2);">
-            SaaS Terminal v2.1
+            SaaS Terminal v2.3
         </span>
-        <h1 style="font-weight: 800; font-size: 36px; margin-top: 15px; margin-bottom: 5px; letter-spacing: -0.5px; color: #ffffff;">
+        <h1 style="font-weight: 800; font-size: 36px; margin-top: 15px; margin-bottom: 5px; letter-spacing: -0.5px; color: #ffffff; display: flex; align-items: center; gap: 12px;">
+            <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
             Simulador Quantitativo de Ativos
         </h1>
-        <p style="color: #64748b; font-size: 15px; margin-top: 0;">
+        <p style="color: #64748b; font-size: 15px; margin-top: 5px;">
             Algoritmo de cálculo de curva de juros diária com compensação regressiva de IOF e IR (Compromissadas vs. CDBs).
         </p>
     </div>
@@ -216,7 +222,7 @@ with col4:
         unsafe_allow_html=True
     )
 
-st.markdown("<br><br>", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
 # --- TABELAS AUXILIARES (Tributação e Dias Úteis) ---
 dias_uteis_map = {
@@ -276,29 +282,90 @@ for corr in range(1, 31):
 
 df = pd.DataFrame(dados_simulacao)
 
-# --- FORMATANDO OS DADOS PARA EXIBIÇÃO ---
+# --- GRÁFICO DE EVOLUÇÃO (PLOTLY PREMIUM - TOTALMENTE AJUSTADO) ---
+st.markdown("<p style='font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 5px;'>📈 Curva de Evolução Patrimonial Líquida</p>", unsafe_allow_html=True)
+
+fig = go.Figure()
+
+# Linha da Compromissada (OC) - Hovertext reposicionado fora do dicionário de marker
+fig.add_trace(go.Scatter(
+    x=df["Dias Corridos"],
+    y=df["Líquido OC"],
+    mode='lines+markers',
+    name='Operação Compromissada (Líquida)',
+    line=dict(color='#10b981', width=3),
+    marker=dict(size=6),
+    hovertext=df["Líquido OC"].map("R$ {:,.2f}".format),
+    hovertemplate="<b>Dia %{x}</b><br>Compromissada: %{hovertext}<extra></extra>"
+))
+
+# Linha do CDB - Hovertext reposicionado fora do dicionário de marker
+fig.add_trace(go.Scatter(
+    x=df["Dias Corridos"],
+    y=df["Líquido CDB"],
+    mode='lines+markers',
+    name='CDB Alvo (Líquido)',
+    line=dict(color='#60a5fa', width=3),
+    marker=dict(size=6),
+    hovertext=df["Líquido CDB"].map("R$ {:,.2f}".format),
+    hovertemplate="<b>Dia %{x}</b><br>CDB Alvo: %{hovertext}<extra></extra>"
+))
+
+# Estilização do Gráfico no tema escuro (Dark Tech)
+fig.update_layout(
+    paper_bgcolor='#0b0f19',
+    plot_bgcolor='#0f172a',
+    margin=dict(l=40, r=40, t=10, b=40),
+    height=380,
+    hovermode="x unified",
+    legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1,
+        font=dict(color="#94a3b8", size=11)
+    ),
+    xaxis=dict(
+        title="Dias Corridos",
+        title_font=dict(color="#64748b", size=12),
+        tickfont=dict(color="#94a3b8"),
+        gridcolor="#1e293b",
+        zeroline=False
+    ),
+    yaxis=dict(
+        title="Rendimento Líquido (R$)",
+        title_font=dict(color="#64748b", size=12),
+        tickfont=dict(color="#94a3b8"),
+        gridcolor="#1e293b",
+        zeroline=False,
+        tickformat="$,.2f"
+    )
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+# --- FORMATANDO OS DADOS PARA EXIBIÇÃO NA TABELA ---
 df_formatado = df.copy()
 df_formatado["Líquido CDB"] = df_formatado["Líquido CDB"].map("R$ {:,.2f}".format)
 df_formatado["Líquido OC"] = df_formatado["Líquido OC"].map("R$ {:,.2f}".format)
 df_formatado["Benefício (OC - CDB)"] = df_formatado["Benefício (OC - CDB)"].map("R$ {:,.2f}".format)
 df_formatado["CDB Equiv. (% do CDI)"] = df_formatado["CDB Equiv. (% do CDI)"].map("{:,.2f}%".format)
 
-# Estilização de Alto Padrão das Células da Tabela
+# Estilização das Células da Tabela
 def style_beneficio(val):
     val_limpo = float(val.replace("R$ ", "").replace(".", "").replace(",", "."))
     if val_limpo >= 0:
-        # Verde floresta suave com borda lateral neon e texto menta
         return "background-color: rgba(6, 78, 59, 0.45); color: #34d399; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
     else:
-        # Vermelho escuro com borda lateral vermelha
         return "background-color: rgba(127, 29, 29, 0.45); color: #f87171; font-weight: bold; font-family: 'JetBrains Mono', monospace;"
 
 # Renderização do Bloco de Tabela
-st.markdown("<p style='font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 15px;'>📈 Matriz de Evolução Diária (1 a 30 dias)</p>", unsafe_allow_html=True)
+st.markdown("<p style='font-size: 16px; font-weight: 700; color: #ffffff; margin-bottom: 15px;'>📊 Matriz de Evolução Diária</p>", unsafe_allow_html=True)
 
 st.dataframe(
     df_formatado.style.map(style_beneficio, subset=["Benefício (OC - CDB)"]),
-    height=800,
+    height=600,
     use_container_width=True
 )
 
