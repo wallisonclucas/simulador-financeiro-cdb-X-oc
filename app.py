@@ -145,7 +145,7 @@ def destacar_beneficio(val):
 
 # Exibindo a tabela formatada no Streamlit
 st.dataframe(
-    df_formatado.style.applymap(destacar_beneficio, subset=["Benefício (OC - CDB)"]),
+    df_formatado.style.map(destacar_beneficio, subset=["Benefício (OC - CDB)"]),
     height=1000,
     use_container_width=True
 )
