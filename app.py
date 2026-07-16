@@ -219,7 +219,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style="text-align: center; color: #6b7280; font-size: 12px; margin-top: 20px;">
-        Desenvolvido por 💻 <strong>Wallison Lucas Intelligence & Finance</strong> | Todos os cálculos consideram d.u. base 252 e IOF/IR regressivos.
+        Desenvolvido por 💻 <strong>Ester Sousa Intelligence & Finance</strong> | Todos os cálculos consideram d.u. base 252 e IOF/IR regressivos.
     </div>
     """,
     unsafe_allow_html=True
