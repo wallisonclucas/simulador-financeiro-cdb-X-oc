@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 
 # Configuração da página do Streamlit (com ícone financeiro na aba do navegador)
 st.set_page_config(
-    page_title="RENDA FIXA | Intelligence & Finance",
+    page_title="RENDA FIXA | Ester Sousa",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -22,6 +22,12 @@ st.markdown(
             font-family: 'Inter', -apple-system, sans-serif !important;
             background-color: #0b0f19 !important;
             color: #f3f4f6 !important;
+        }
+
+        /* AJUSTE DE ESPAÇO NO TOPO (Reduz o padding padrão do Streamlit) */
+        .block-container {
+            padding-top: 1.5rem !important;
+            padding-bottom: 2rem !important;
         }
 
         /* Esconder cabeçalho padrão do Streamlit para parecer um app nativo */
@@ -52,30 +58,42 @@ st.markdown(
             box-shadow: 0 0 10px rgba(16, 185, 129, 0.2) !important;
         }
 
-        /* Cards de Métricas Premium com Fundo Branco Texturizado e Bordas Ativas */
+        /* CARDS PREMIUM EM VERDE ESCURO COM TEXTURA, EFEITO 3D E INTERATIVOS */
         .premium-card {
-            background-color: #ffffff !important;
-            /* Textura moderna sutil de grade pontilhada */
-            background-image: radial-gradient(#e2e8f0 1.5px, transparent 1.5px) !important;
+            background-color: #061b13 !important; /* Verde escuro fechado e imersivo */
+            
+            /* Textura tecnológica de grade de pontos em verde sutil */
+            background-image: radial-gradient(rgba(16, 185, 129, 0.15) 1.5px, transparent 1.5px) !important;
             background-size: 12px 12px !important;
             
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 16px;
+            /* Bordas e relevo 3D na cor do tema floresta */
+            border: 1px solid #0f3f2d !important;
+            border-bottom: 5px solid #042f1a !important; /* "Base" do bloco 3D */
+            border-radius: 18px;
             padding: 24px 20px;
-            text-align: center; /* Centraliza todo o texto do card */
+            text-align: center; /* Centraliza todo o texto */
             
-            /* Sombra suave e elegante para efeito de profundidade */
-            box-shadow: 0 10px 20px -3px rgba(0, 0, 0, 0.2), 0 4px 8px -4px rgba(0, 0, 0, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            /* Sombra suave inicial */
+            box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            
+            /* Transição de mola ultra fluida para a animação */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
+            transform: translateZ(0); /* Aceleração de hardware gráfica */
         }
 
-        /* Efeito Hover moderno nos cards (Brilho ativo com borda de destaque) */
+        /* EFEITO AO PASSAR O MOUSE (REVELAÇÃO E ILUMINAÇÃO) */
         .premium-card:hover {
-            transform: translateY(-4px);
+            /* Amplia ligeiramente (escala 1.03x) e empurra o card para cima */
+            transform: scale(1.03) translateY(-8px);
+            
+            /* Ativa as bordas iluminadas */
             border-color: #10b981 !important;
-            box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.15), 0 10px 10px -5px rgba(16, 185, 129, 0.1);
+            border-bottom: 2px solid #059669 !important;
+            
+            /* Sombra brilhante e dispersa simula a luz física e altura do card */
+            box-shadow: 0 25px 35px -10px rgba(16, 185, 129, 0.3), 0 12px 15px -8px rgba(16, 185, 129, 0.2);
         }
 
         .premium-label {
@@ -83,7 +101,7 @@ st.markdown(
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            color: #64748b !important; /* Cinza de boa legibilidade sobre fundo branco */
+            color: #86efac !important; /* Verde menta suave de altíssima legibilidade */
             margin-bottom: 10px;
             text-align: center;
         }
@@ -91,13 +109,14 @@ st.markdown(
         .premium-value {
             font-size: 24px;
             font-weight: 800;
-            color: #0f172a !important; /* Azul escuro quase preto de altíssimo contraste */
+            color: #ffffff !important; /* Branco brilhante para contraste máximo sobre o fundo verde */
             font-family: 'JetBrains Mono', monospace;
             text-align: center;
         }
 
         .premium-highlight {
-            color: #059669 !important; /* Verde focado na legibilidade */
+            color: #10b981 !important; /* Verde brilhante ativo */
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
         }
 
         /* Customização da Tabela de Dados */
@@ -118,7 +137,7 @@ st.sidebar.markdown(
         </span>
         <br>
         <span style="font-size: 9px; font-weight: 600; letter-spacing: 5px; color: #64748b; text-transform: uppercase; margin-top: 5px; display: inline-block;">
-            INTELLIGENCE & FINANCE
+            ESTER SOUSA
         </span>
     </div>
     """,
@@ -188,7 +207,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium (Fundo Branco com Textura)
+# Grid de Layout usando Columns para hospedar os Cards de Métricas Premium (Fundo Verde Escuro)
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -207,7 +226,7 @@ with col2:
         f"""
         <div class="premium-card">
             <div class="premium-label">Taxa Compromissada</div>
-            <div class="premium-value premium-highlight">{taxa_compromissada_pct:.1f}% <span style="font-size: 14px; color: #64748b;">CDI</span></div>
+            <div class="premium-value premium-highlight">{taxa_compromissada_pct:.1f}% <span style="font-size: 14px; color: #86efac;">CDI</span></div>
         </div>
         """,
         unsafe_allow_html=True
@@ -218,7 +237,7 @@ with col3:
         f"""
         <div class="premium-card">
             <div class="premium-label">Taxa CDB Alvo</div>
-            <div class="premium-value" style="color: #2563eb !important;">{taxa_cdb_pct:.1f}% <span style="font-size: 14px; color: #64748b;">CDI</span></div>
+            <div class="premium-value" style="color: #3b82f6 !important;">{taxa_cdb_pct:.1f}% <span style="font-size: 14px; color: #86efac;">CDI</span></div>
         </div>
         """,
         unsafe_allow_html=True
@@ -229,7 +248,7 @@ with col4:
         f"""
         <div class="premium-card">
             <div class="premium-label">Taxa CDI de Referência</div>
-            <div class="premium-value" style="font-size: 21px;">{cdi_anual*100:.2f}% <span style="font-size: 14px; color: #64748b;">a.a.</span></div>
+            <div class="premium-value" style="font-size: 21px;">{cdi_anual*100:.2f}% <span style="font-size: 14px; color: #86efac;">a.a.</span></div>
         </div>
         """,
         unsafe_allow_html=True
@@ -386,7 +405,7 @@ st.markdown("---")
 st.markdown(
     """
     <div style="text-align: center; color: #475569; font-size: 11px; margin-top: 25px; font-weight: 500;">
-        SISTEMA DE ANÁLISE QUANTITATIVA • DESENVOLVIDO POR <strong>ESTER SOUSA INTELLIGENCE & FINANCE</strong><br>
+        SISTEMA DE ANÁLISE QUANTITATIVA • DESENVOLVIDO POR <strong>ESTER SOUSA RENDA FIXA</strong><br>
         Curva de juros calibrada com base 252 d.u./ano. Os valores informados são simulações brutas deduzidas de encargos legais (IOF/IR) vigentes.
     </div>
     """,
